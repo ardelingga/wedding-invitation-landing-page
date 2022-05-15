@@ -1,0 +1,47 @@
+.d-none {
+  display: none;
+}
+
+.b-radius-20 {
+  border-radius: 20px;
+}
+
+.b-radius-30 {
+  border-radius: 30px;
+}
+
+.animation {
+  animation: pulse 1s ease infinite;
+}
+
+#fh5co-footer {
+  padding: 7em 0em 0em 0em !important;
+}
+
+.title-modal {
+  margin-bottom: 0px;
+  font-size: 100px;
+  line-height: 1.5;
+  font-family: "Sacramento", Arial, serif;
+}
+
+.hr-modal {
+  color: #fff;
+  border: 2px solid #212121;
+  width: 40%;
+  border-radius: 100px;
+}
+
+#fh5co-header.fh5co-cover img,
+.display-tc img {
+  height: 350px;
+  margin-top: -30px;
+}
+
+#fh5co-event{
+  background-image:url(../images/additional/7.jpg);
+}
+
+.text-dark{
+  color: #212121;
+}
