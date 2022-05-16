@@ -1,0 +1,276 @@
+<html>
+
+<head>
+  <style>
+    table,
+    th,
+    td {
+      margin: 10px 0;
+      border: solid 1px #333;
+      padding: 2px 4px;
+      font: 15px Verdana;
+    }
+
+    th {
+      font-weight: bold;
+    }
+
+    #loader {
+      border: 16px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 16px solid blue;
+      border-bottom: 16px solid blue;
+      width: 60px;
+      height: 60px;
+      -webkit-animation: spin 2s linear infinite;
+      animation: spin 2s linear infinite;
+      visibility: hidden;
+    }
+
+    @-webkit-keyframes spin {
+      0% {
+        -webkit-transform: rotate(0deg);
+      }
+
+      100% {
+        -webkit-transform: rotate(360deg);
+      }
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script>
+
+    var script_url = "https://script.google.com/macros/s/AKfycbzUTqbHFr-YmHAKLtKEx6PD8iWJ1IpO0jpWYVPolKfLIw4a01A8hHJJYHtHG3D5lG174w/exec";
+
+    // Make an AJAX call to Google Script
+    function insert_value() {
+      console.log("this -> MAKAN BESAR");
+      $("#re").css("visibility", "hidden");
+      document.getElementById("loader").style.visibility = "visible";
+      $('#mySpinner').addClass('spinner');
+
+      var name = $("#name").val();
+      var gender = $("#gender").val();
+      var message = $("#message").val();
+
+
+      var url = script_url + "?callback=ctrlq&name=" + name + "&gender=" + gender + "&message=" + message + "&action=insert";
+      
+      console.log(url);
+
+      var request = jQuery.ajax({
+        // url: url,
+        // method: "GET",
+        // dataType: "jsonp"
+        
+        crossDomain: true,
+        url:  url,
+        type: 'GET',
+        async: true,
+        dataType: 'json',
+        enctype: 'multipart/form-data',
+        cache: false,
+        success: function(data){
+          // $('#btn_insert').one('click', insert_value);
+          console.log("SUCCESS");
+          console.log(data);
+        },
+        error: function(thrownError){
+          console.log("ERROR");
+        },
+        complete: function () {
+          console.log("COMPLETE");
+          $("#re").css("visibility", "visible");
+          read_value();
+        }
+      });
+
+      console.log("BERHASIL HIT AJAX");
+
+    }
+
+
+
+
+
+
+
+    function update_value() {
+      $("#re").css("visibility", "hidden");
+      document.getElementById("loader").style.visibility = "visible";
+
+
+      var id1 = $("#id").val();
+      var name = $("#name").val();
+
+
+
+      var url = script_url + "?callback=ctrlq&name=" + name + "&id=" + id1 + "&action=update";
+
+
+      var request = jQuery.ajax({
+        crossDomain: true,
+        url: url,
+        method: "GET",
+        dataType: "jsonp"
+      });
+
+
+    }
+
+
+
+
+
+    function delete_value() {
+      $("#re").css("visibility", "hidden");
+      document.getElementById("loader").style.visibility = "visible";
+      $('#mySpinner').addClass('spinner');
+      var id1 = $("#id").val();
+      var name = $("#name").val();
+
+
+      var url = script_url + "?callback=ctrlq&name=" + name + "&id=" + id1 + "&action=delete";
+
+
+      var request = jQuery.ajax({
+        crossDomain: true,
+        url: url,
+        method: "GET",
+        dataType: "jsonp"
+      });
+
+    }
+
+
+
+
+    // print the returned data
+    function ctrlq(e) {
+
+
+      $("#re").html(e.result);
+      $("#re").css("visibility", "visible");
+      read_value();
+
+    }
+
+
+
+
+    function read_value() {
+
+      $("#re").css("visibility", "hidden");
+
+      document.getElementById("loader").style.visibility = "visible";
+      var url = script_url + "?action=read";
+
+      $.getJSON(url, function (json) {
+
+        // Set the variables from the results array
+
+
+
+
+        // CREATE DYNAMIC TABLE.
+        var table = document.createElement("table");
+
+
+
+        var header = table.createTHead();
+        var row = header.insertRow(0);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+
+        cell1.innerHTML = "<b>ID</b>";
+        cell2.innerHTML = "<b>Name</b>";
+        cell3.innerHTML = "<b>Gender</b>";
+        cell4.innerHTML = "<b>Message</b>";
+
+        // ADD JSON DATA TO THE TABLE AS ROWS.
+        for (var i = 0; i < json.records.length; i++) {
+
+          tr = table.insertRow(-1);
+          var tabCell = tr.insertCell(-1);
+          tabCell.innerHTML = json.records[i].ID;
+          tabCell = tr.insertCell(-1);
+          tabCell.innerHTML = json.records[i].Name;
+          tabCell = tr.insertCell(-1);
+          tabCell.innerHTML = json.records[i].Gender;
+          tabCell = tr.insertCell(-1);
+          tabCell.innerHTML = json.records[i].Message;
+        }
+
+
+        // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
+        var divContainer = document.getElementById("showData");
+        divContainer.innerHTML = "";
+        divContainer.appendChild(table);
+        document.getElementById("loader").style.visibility = "hidden";
+        $("#re").css("visibility", "visible");
+      });
+    }
+
+  </script>
+
+
+
+
+</head>
+
+<body>
+  <div align="center">
+    <h1>CRUD OPERATION ON GOOGLE SPREAD SHEET, WEB APPLICATION USING GOOGLE APP SCRIPT .</h1>
+    <p>This is simple application, You can develop your own logic based on your requiremnets.
+    <p>
+    <p>Be careful with the parameters you are sending, it should match the parameters that are recived in google app
+      script.</p>
+
+
+    <form>
+      Name
+      <input type="text" name="name" id="name">
+      Gender
+      <input type="text" name="gender" id="gender">
+      Message
+      <input type="text" name="message" id="message">
+
+    </form>
+
+    <div id="loader"></div>
+
+    <p id="re"></p>
+
+    <input type="button" onclick="insert_value()" value="Insert"></input>
+    <input type="button" onclick="read_value()" value="Read" />
+    <input type="button" onclick="update_value()" value="Update" />
+    <input type="button" onclick="delete_value()" value="Delete" />
+    <a href="https://docs.google.com/spreadsheets/d/1OmqvphAqP4WEcrsZAMNNeL2YVn3RJffVOIGgdPiyEVA/edit?usp=sharing"
+      target="_blank">Click here to open Spread Sheet </a>
+    <div id="showData"></div>
+  </div>
+  
+  <script>
+    $(document).ready(function () {
+      $('#btn_insert').one('click', insert_value);
+    });
+
+  </script>
+</body>
+<div align="center">
+  <p>ANDROID LABS 2017 | All Rights Reserved</p>
+</div>
+<html>
